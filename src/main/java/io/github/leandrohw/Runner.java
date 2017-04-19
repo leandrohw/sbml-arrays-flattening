@@ -1,6 +1,8 @@
 package io.github.leandrohw;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -22,15 +24,21 @@ public class Runner {
     
     SBMLDocument doc;
     try {
-      doc = SBMLReader.read("Input.xml");
+      doc = SBMLReader.read(new File(args[0]));
+       
       SBMLDocument flattened = ArraysFlattening.convert(doc);
       SBMLWriter.write(flattened, "output.xml", ' ', (short)4);
     } catch (XMLStreamException e) {
-      System.err.println("Failed to read input document.");
+      System.err.println("Failed to parse XML document.");
+      System.err.println(e.getMessage());
     } catch (SBMLException e) {
       System.err.println("Failed to read input document.");
+      System.err.println(e.getShortMessage());
     } catch (FileNotFoundException e) {
       System.err.println("Input file could not be found.");
+    } catch (IOException e) {
+      System.err.println("Failed to read input document.");
+      System.err.println(e.getMessage());
     }
   }
 }
